@@ -1,0 +1,7 @@
+{
+  "name": "gym-users-app",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'Build completed' && mkdir -p build && echo '<h1>Test Build</h1>' > build/index.html"
+  }
+}
