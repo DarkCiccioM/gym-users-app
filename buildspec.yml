@@ -26,4 +26,4 @@ phases:
 artifacts:
   files:
     - '**/*'
-  base-directory: 'build'  # Cambia in 'dist' o '.next' se usi Next.js
+  base-directory: 'next'  
