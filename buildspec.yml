@@ -3,27 +3,20 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 18
+      nodejs: 20
     commands:
-      - echo "Installing dependencies..."
-      - npm install
-  
-  pre_build:
-    commands:
-      - echo "Running pre-build checks..."
-      - npm --version
-      - node --version
+      - echo "No dependencies to install"
   
   build:
     commands:
-      - echo "Building application..."
-      - npm run build
+      - echo "No build step needed - static files"
   
   post_build:
     commands:
-      - echo "Build completed successfully!"
+      - echo "Preparing static files..."
+      - ls -la
 
 artifacts:
   files:
     - '**/*'
-  base-directory: '.next'  
+  base-directory: '.'  # ← Prende tutti i file dalla root
