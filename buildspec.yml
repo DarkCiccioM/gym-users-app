@@ -5,18 +5,23 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      - echo "No dependencies to install"
+      - echo "Installing dependencies..."
+      - npm install
   
   build:
     commands:
-      - echo "No build step needed - static files"
+      - echo "Creating public directory if needed..."
+      - mkdir -p public
+      - cp index.html public/index.html 2>/dev/null || true
+      - echo "Building application..."
+      - npm run build
   
   post_build:
     commands:
-      - echo "Preparing static files..."
-      - ls -la
+      - echo "Build completed!"
+      - ls -la build/ || ls -la
 
 artifacts:
   files:
     - '**/*'
-  base-directory: '.'  # ← Prende tutti i file dalla root
+  base-directory: 'build'
