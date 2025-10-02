@@ -5,19 +5,25 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - echo "Build started on `date`"
-  pre_build:
-    commands:
       - echo "Installing dependencies..."
       - npm install
+  
+  pre_build:
+    commands:
+      - echo "Running pre-build checks..."
+      - npm --version
+      - node --version
+  
   build:
     commands:
-      - echo "Building React app..."
+      - echo "Building application..."
       - npm run build
+  
   post_build:
     commands:
-      - echo "Build completed on `date`"
+      - echo "Build completed successfully!"
+
 artifacts:
   files:
     - '**/*'
-  base-directory: build
+  base-directory: 'build'  # Cambia in 'dist' o '.next' se usi Next.js
