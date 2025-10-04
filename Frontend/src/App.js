@@ -7,8 +7,8 @@ const GymUsersApp = () => {
   const [error, setError] = useState('');
   const [creating, setCreating] = useState(false);
 
-  // URL della tua API
-  const API_BASE_URL = https://nahj9gcdg0.execute-api.us-east-1.amazonaws.com/nuovafase
+  // URL della tua API (CORRETTA LA SINTASSI A RIGA 11)
+  const API_BASE_URL = 'https://nahj9gcdg0.execute-api.us-east-1.amazonaws.com/nuovafase';
 
   // Fetch tutti gli utenti
   const fetchUsers = async () => {
