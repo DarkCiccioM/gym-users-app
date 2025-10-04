@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://tuonome.github.io/gym-users-app",
   "dependencies": {
-    "ajv": "6.12.6"
+    "ajv": "6.12.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -40,3 +40,4 @@
     "gh-pages": "^6.0.0"
   }
 }
+
