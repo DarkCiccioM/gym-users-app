@@ -6,6 +6,9 @@ version: 0.2
 # -------------------------------------------------------------------------
 phases:
   install:
+    runtime-versions:
+      # Forza l'uso di Node 20.x
+      nodejs: 20
     commands:
       # Verifica che la versione corretta di Node.js sia in uso (come rilevato dai log)
       - echo "Checking Node and npm versions..."
