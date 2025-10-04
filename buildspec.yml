@@ -11,14 +11,12 @@ phases:
       
   pre_build:
     commands:
-      - echo "Navigating to Frontend..."
-      - cd Frontend
-      - echo "Installing dependencies..."
-      - npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+      - echo "Installing dependencies in Frontend..."
+      - cd Frontend && npm install --legacy-peer-deps
 
   build:
     commands:
-      - echo "Building React app from root..."
+      - echo "Building React app..."
       - cd Frontend && CI=false npm run build
       
   post_build:
