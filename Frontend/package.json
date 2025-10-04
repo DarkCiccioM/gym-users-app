@@ -1,36 +1,53 @@
-{
-  "name": "gym-users-app",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "ajv":"6.12.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
-}
+version: 0.2
 
+# Assumi che le dipendenze di CodeBuild siano già state definite (es. Node.js 20)
+
+phases:
+  # L'installazione di base del runtime di Node.js può restare invariata.
+  # Se hai già configurato l'ambiente Node 20, puoi saltare questa fase.
+  install:
+    commands:
+      # Puoi rimuovere l'installazione di Node se l'hai già definita a livello di immagine
+      # o mantenere questi comandi se non usi un'immagine specifica (come nel tuo log).
+      - echo "Checking/Setting Node version..."
+      - node --version
+      - npm --version
+
+  pre_build:
+    commands:
+      - echo "Entering Frontend directory and cleaning cache..."
+      - cd Frontend
+      
+      # *** PASSI CRITICI DI RISOLUZIONE ***
+      # 1. Pulizia completa di tutti i pacchetti e del lock file
+      - rm -rf node_modules
+      - rm -f package-lock.json
+      
+      # 2. Pulizia della cache globale di npm nel container (essenziale)
+      - npm cache clean --force
+      
+      # 3. Reinstallazione pulita (senza --legacy-peer-deps se npm è recente, altrimenti lascialo)
+      - echo "Installing fresh dependencies..."
+      - npm install
+      
+      # Torna alla radice del progetto per i comandi successivi, se necessario
+      - cd ..
+
+  build:
+    commands:
+      - echo "Building React app..."
+      # Esegue il comando di build dalla root o dalla cartella Frontend
+      - (cd Frontend && npm run build)
+
+  post_build:
+    commands:
+      - echo "Build completed, copying artifacts..."
+      # Copia gli artefatti necessari per la fase successiva (es. CodePipeline)
+      - cp -R Frontend/build/. .
+      
+artifacts:
+  files:
+    # Specifica i file da includere nell'artefatto di build (es. per S3 o CodeDeploy)
+    - '**/*'
+  # Se devi solo caricare la cartella 'build'
+  # base-directory: Frontend/build
