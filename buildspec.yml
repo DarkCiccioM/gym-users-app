@@ -12,12 +12,12 @@ phases:
   pre_build:
     commands:
       - echo "Installing dependencies in Frontend..."
-      - cd Frontend && npm install --legacy-peer-deps
+      - (cd Frontend && npm install --legacy-peer-deps)
 
   build:
     commands:
       - echo "Building React app..."
-      - cd Frontend && CI=false npm run build
+      - (cd Frontend && CI=false npm run build)
       
   post_build:
     commands:
