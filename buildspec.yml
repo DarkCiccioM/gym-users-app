@@ -18,9 +18,8 @@ phases:
 
   build:
     commands:
-      - echo "Building React app..."
-      - cd Frontend
-      - CI=false npm run build
+      - echo "Building React app from root..."
+      - cd Frontend && CI=false npm run build
       
   post_build:
     commands:
