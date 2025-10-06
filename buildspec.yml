@@ -12,7 +12,6 @@ phases:
       - echo "Starting clean install in Frontend directory..."
       - cd Frontend
       
-      # Correzione: Pulizia e installazione approfondita
       - rm -rf node_modules
       - npm cache clean --force
       - npm install
@@ -22,7 +21,6 @@ phases:
   build:
     commands:
       - echo "Starting React build..."
-      # Esegue la compilazione all'interno della cartella Frontend
       - cd Frontend
       - CI=false npm run build 
       - echo "Build finished."
@@ -33,20 +31,14 @@ phases:
     commands:
       - echo "Staging final build files to artifact root..."
       
-      # ** CRUCIALE: Copia il contenuto di Frontend/build nella radice (./) del contesto di build **
-      # Questo assicura che index.html sia il primo file nello ZIP.
-      - cp -R Frontend/build/. .
+      # *** CORREZIONE: Copia da Frontend/Public ***
+      - cp -R Frontend/Public/. .
       
-      # ** OPTIONAL: Se l'errore precedente era 'Frontend/Public' **
-      # Potrebbe esserci un conflitto con il comando cp -R.
-      # Rimuoviamo la cartella per evitare confusione se è stata creata:
+      # Rimuove la cartella sorgente per evitare confusione nell'artefatto
       - rm -rf Frontend
-      
 
 # FASE FINALE: Definisce l'artefatto per il deployment
 artifacts:
   files:
-    # Indica a CodeBuild di includere TUTTO ciò che si trova nella radice del contesto di build (dove è stato copiato index.html)
+    # Include TUTTO ciò che si trova nella radice del contesto di build
     - '**/*'
-    
-  # Non usare base-directory. L'abbiamo risolta copiando i file.
