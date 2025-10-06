@@ -26,15 +26,14 @@ phases:
       - echo "Build finished."
       - cd ..
 
-  # NUOVA FASE: Sposta il contenuto compilato nella radice del contesto di CodeBuild
+  # FASE MODIFICATA: Sposta il contenuto compilato nella radice del contesto di CodeBuild
   post_build:
     commands:
       - echo "Staging final build files to artifact root..."
       
-      # *** CORREZIONE: Copia da Frontend/Public ***
-      - cp -R Frontend/Public/. .
+      # Utilizza il percorso standard di output di React
+      - cp -R Frontend/build/. .
       
-      # Rimuove la cartella sorgente per evitare confusione nell'artefatto
       - rm -rf Frontend
 
 # FASE FINALE: Definisce l'artefatto per il deployment
