@@ -5,13 +5,14 @@ phases:
     runtime-versions:
       nodejs: 20 
     commands:
-      - echo "Installing dependencies..."
+      - echo "Installing dependencies for Node.js 20..."
       
   pre_build:
     commands:
       - echo "Starting clean install in Frontend directory..."
       - cd Frontend
       
+      # Correzione: Pulizia e installazione approfondita
       - rm -rf node_modules
       - npm cache clean --force
       - npm install
@@ -21,27 +22,17 @@ phases:
   build:
     commands:
       - echo "Starting React build..."
+      # Esegue la compilazione all'interno della cartella Frontend
       - cd Frontend
-      # Esegui la compilazione standard
       - CI=false npm run build 
       - echo "Build finished."
       - cd ..
-
-  # FASE AGGIUNTA/MODIFICATA: Sposta i file in una cartella temporanea
-  post_build:
-    commands:
-      - echo "Copying build content to staging directory..."
-      # Assumendo che la cartella di output sia 'Frontend/build' (lo standard)
-      # Copia il contenuto di 'build' nella radice del contesto di CodeBuild.
-      # Se la tua cartella di output è 'Frontend/Public', cambia questo in Frontend/Public/.
-      - cp -R Frontend/build/. .
-      
+  
 # FASE CRUCIALE: Definisce l'artefatto per il deployment
 artifacts:
   files:
-    # Ora che abbiamo spostato i file nella radice del contesto di build, 
-    # diciamo a CodeBuild di prendere tutto dalla radice.
     - '**/*'
     
-  # Rimuoviamo la direttiva base-directory per non confondere CodeBuild.
-  # base-directory: Frontend/build  <-- NON USARLA PIÙ
+  # CORREZIONE FINALE DEL PATH: Sposta il contenuto della cartella 'build' 
+  # nella radice dell'artefatto ZIP, risolvendo il problema dell'URL S3.
+  base-directory: Frontend/build
