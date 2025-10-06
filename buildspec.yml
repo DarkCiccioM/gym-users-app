@@ -5,7 +5,7 @@ phases:
     runtime-versions:
       nodejs: 20 
     commands:
-      - echo "Installing dependencies for Node.js 20..."
+      - echo "Installing dependencies..."
       
   pre_build:
     commands:
@@ -27,12 +27,26 @@ phases:
       - CI=false npm run build 
       - echo "Build finished."
       - cd ..
-  
-# FASE CRUCIALE: Definisce l'artefatto per il deployment
+
+  # NUOVA FASE: Sposta il contenuto compilato nella radice del contesto di CodeBuild
+  post_build:
+    commands:
+      - echo "Staging final build files to artifact root..."
+      
+      # ** CRUCIALE: Copia il contenuto di Frontend/build nella radice (./) del contesto di build **
+      # Questo assicura che index.html sia il primo file nello ZIP.
+      - cp -R Frontend/build/. .
+      
+      # ** OPTIONAL: Se l'errore precedente era 'Frontend/Public' **
+      # Potrebbe esserci un conflitto con il comando cp -R.
+      # Rimuoviamo la cartella per evitare confusione se è stata creata:
+      - rm -rf Frontend
+      
+
+# FASE FINALE: Definisce l'artefatto per il deployment
 artifacts:
   files:
+    # Indica a CodeBuild di includere TUTTO ciò che si trova nella radice del contesto di build (dove è stato copiato index.html)
     - '**/*'
     
-  # CORREZIONE FINALE DEL PATH: Sposta il contenuto della cartella 'build' 
-  # nella radice dell'artefatto ZIP, risolvendo il problema dell'URL S3.
-  base-directory: Frontend/build
+  # Non usare base-directory. L'abbiamo risolta copiando i file.
