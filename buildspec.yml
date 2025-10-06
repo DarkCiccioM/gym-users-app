@@ -35,4 +35,4 @@ artifacts:
     
   # CORREZIONE FINALE DEL PATH: Sposta il contenuto della cartella 'build' 
   # nella radice dell'artefatto ZIP, risolvendo il problema dell'URL S3.
-  base-directory: Frontend/build
+  base-directory: Frontend/Public
