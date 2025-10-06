@@ -1,72 +1,38 @@
 version: 0.2
 
-# -------------------------------------------------------------------------
-# FASE DI IMPOSTAZIONE (ENVIRONMENT)
-# Inizializza l'ambiente di build con Node.js 20.
-# -------------------------------------------------------------------------
 phases:
   install:
     runtime-versions:
-      # Forza l'uso di Node 20.x
-      nodejs: 20
+      nodejs: 20 
     commands:
-      # Verifica che la versione corretta di Node.js sia in uso (come rilevato dai log)
-      - echo "Checking Node and npm versions..."
-      - node --version
-      - npm --version
-
-# -------------------------------------------------------------------------
-# FASE DI PRE-BUILD (PULIZIA E INSTALLAZIONE CRITICA)
-# Questa fase è cruciale: garantisce una pulizia profonda per risolvere i conflitti di dipendenza.
-# -------------------------------------------------------------------------
+      - echo "Installing dependencies for Node.js 20..."
+      
   pre_build:
     commands:
-      - echo "Entering Frontend directory and performing clean install..."
+      - echo "Starting clean install in Frontend directory..."
       - cd Frontend
       
-      # *** PASSI FONDAMENTALI PER RISOLVERE L'ERRORE 'ajv' ***
-      # 1. Rimuove la cartella node_modules e il file di blocco per un'installazione da zero
+      # Correzione: Pulizia e installazione approfondita
       - rm -rf node_modules
-      - rm -f package-lock.json
-      
-      # 2. Pulisce la cache globale di npm (necessario per eliminare le versioni corrotte o obsolete)
       - npm cache clean --force
-      
-      # 3. Esegue la nuova installazione delle dipendenze
-      - echo "Installing fresh dependencies..."
       - npm install
       
-      # Torna alla radice del progetto per la fase BUILD successiva
       - cd ..
 
-# -------------------------------------------------------------------------
-# FASE DI BUILD (COMPILAZIONE)
-# Esegue il comando di compilazione React che crea la cartella 'build'.
-# -------------------------------------------------------------------------
   build:
     commands:
-      - echo "Starting React build (npm run build)..."
-      # Esegue il comando di build all'interno della cartella Frontend
-      - (cd Frontend && CI=false npm run build)
-
-# -------------------------------------------------------------------------
-# FASE DI POST-BUILD (PREPARAZIONE DEGLI ARTEFATTI)
-# Prepara l'output per la fase di deploy.
-# -------------------------------------------------------------------------
-  post_build:
-    commands:
-      - echo "Build successful. Preparing artifacts..."
-      # Copia il contenuto della cartella 'build' (creata dal comando npm run build) 
-      # nella root dell'artefatto per l'upload
-      - cp -R Frontend/build/. .
-      
-# -------------------------------------------------------------------------
-# ARTEFATTI
-# Definisce quali file e cartelle CodeBuild deve salvare come output.
-# -------------------------------------------------------------------------
+      - echo "Starting React build..."
+      # Esegue la compilazione all'interno della cartella Frontend
+      - cd Frontend
+      - CI=false npm run build 
+      - echo "Build finished."
+      - cd ..
+  
+# FASE CRUCIALE: Definisce l'artefatto per il deployment
 artifacts:
   files:
-    # Indica a CodeBuild di includere tutti i file e sottocartelle
     - '**/*'
-  # L'opzione 'base-directory' può essere omessa dato che abbiamo copiato i file
-  # nella root del contesto di CodeBuild nel post_build.
+    
+  # CORREZIONE FINALE DEL PATH: Sposta il contenuto della cartella 'build' 
+  # nella radice dell'artefatto ZIP, risolvendo il problema dell'URL S3.
+  base-directory: Frontend/build
