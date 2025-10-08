@@ -1,0 +1,6 @@
+name: Deploy to FTP
+
+on:
+  push:
+    branches: [ main ]  # Si attiva automaticamente ad ogni push sul branch main
+  workflow_dispatch:  # Mantiene anche la possibilità di avvio manuale
